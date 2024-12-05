@@ -1,0 +1,53 @@
+Open folder - TBOS
+Create env - python -m venv tbos_env
+Activate env - .\tbos_env\Scripts\activate
+
+Install Django - pip install Django
+Create Project - django-admin startproject Restaurant
+Navigate inside Restaurant app(main) - cd Restaurant
+Create App - python manage.py startapp Table
+Add Application name in "INSTALLED_APPS" of settings.py of Restaurant
+Admin panel - python manage.py createsuperuser
+
+
+ORM
+Database
+Login Page
+html page
+
+Table
+=====
+Create table in Database
+Images of dish
+Dish list
+
+============================================================================================================================
+MySQL download
+============================================================================================================================ 
+1. Download MySQL Installer - link: https://dev.mysql.com/downloads/installer/
+    Here choose 2.1M(mysql-installer-web-community-8.0.40.0.msi) download link (https://dev.mysql.com/downloads/file/?id=536355)
+2. Install MySQL Installer
+3. Download and Install MySQL Workbench ( Add > Application > MySQL Workbench > MySQL Workbench > Choose the latest release > Click right arrow)
+4. Test Connection
+5. Create Database
+
+Link database to Django
+===========================
+DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # MySQL backend
+        'NAME': 'tbos',         # Replace with your MySQL database name
+        'USER': 'root',            # Replace with your MySQL username
+        'PASSWORD': 'root',    # Replace with your MySQL password
+        'HOST': 'localhost',                  # Use 'localhost' if running locally, or the server IP
+        'PORT': '3306',                       # Default MySQL port
+    }
+}
+
+
+
+
