@@ -51,6 +51,7 @@ def login_user(request):
             return render(request, "login.html", {"error": "User not found"})
 
     return render(request, "login.html")
+
 def logout_user(request):
     logout(request)
     messages.success(request, "You have successfully logged out.")
@@ -58,5 +59,20 @@ def logout_user(request):
 
 
 def items(request):
-    return render(request, "items.html")
+    if request.method == 'POST':
+        food_name = request.POST.get('food_name')
+        food_category = request.POST.get('food_category')
+        food_price = request.POST.get('food_price')
+        food_image = request.FILES.get('food_image')
+
+        # Save the data to the model
+        # Food.objects.create(
+        #     name=food_name,
+        #     category=food_category,
+        #     price=food_price,
+        #     image=food_image
+        # )
+        return redirect('success')  # Redirect after successful addition
+
+    return render(request, 'items.html')
 
