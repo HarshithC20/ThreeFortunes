@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from .models import User
 from django.contrib.auth.hashers import check_password
+from .models import Foods
+from django.conf import settings
 
 def register_user(request):
     if request.method == "POST":
@@ -51,6 +53,7 @@ def login_user(request):
             return render(request, "login.html", {"error": "User not found"})
 
     return render(request, "login.html")
+
 def logout_user(request):
     logout(request)
     messages.success(request, "You have successfully logged out.")
@@ -58,5 +61,26 @@ def logout_user(request):
 
 
 def items(request):
-    return render(request, "items.html")
+    if request.method == 'POST':
+        food_name = request.POST.get('food_name')
+        food_category = request.POST.get('food_category')
+        food_price = request.POST.get('food_price')
+        food_image = request.FILES.get('food_image')
+        # image_url = request.build_absolute_uri(settings.MEDIA_URL + f"food_images/{food_image}")
+
+        # Save the data to the model
+        Foods.objects.create(
+            foodname=food_name,
+            category=food_category,
+            price=food_price,
+            image=food_image
+        )
+        foods = Foods.objects.all()
+        return render(request, 'items.html', {'foods': foods})  # Redirect after successful addition
+
+    # Fetch all food items to display
+    foods = Foods.objects.all()
+    return render(request, 'items.html', {'foods': foods})
+
+
 

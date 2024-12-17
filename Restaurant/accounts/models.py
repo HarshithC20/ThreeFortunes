@@ -9,7 +9,11 @@ class User(models.Model):
     def __str__(self):
         return self.username
 
-# Food Name
-# Category(Starter, Main course, Dessert, Snacks)
-# Price
-# Image
+class Foods(models.Model):
+    foodname = models.CharField(max_length=255)
+    category = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.ImageField(upload_to='food_images/')
+
+    def __str__(self):
+        return self.foodname
