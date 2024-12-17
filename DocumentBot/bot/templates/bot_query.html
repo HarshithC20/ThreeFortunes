@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Query Bot</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Verdana', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content Styling */
+        .main {
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .main h2 {
+            font-size: 1.5rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Answer Display Styling */
+        .result-container {
+            margin-top: 20px;
+        }
+
+        .result {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .result h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+
+        .result p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* Language Dropdown */
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .converted {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Document Query Bot</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <h2>Ask Your Question</h2>
+
+        <!-- Query Form -->
+        <form method="POST" action="/query/">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="query">Enter your query:</label>
+                <input type="text" id="query" name="query" value="{{ query|default:'' }}">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Top Result -->
+        {% if top_result %}
+        <div class="result-container">
+            <div class="result">
+                <h3>Top Result:</h3>
+                <p>{{ top_result }}</p>
+            </div>
+
+            <!-- Language Conversion Form -->
+            <form method="POST" action="/query/">
+                {% csrf_token %}
+                <input type="hidden" name="text_to_convert" value="{{ top_result }}">
+                <div class="form-group">
+                    <label for="language">Translate to another language:</label>
+                    <select id="language" name="language">
+                        <option value="en">English</option>
+                        <option value="kn">Kannada</option>
+                        <option value="ml">Malayalam</option>
+                        <option value="hi">Hindi</option>
+                        <option value="te">Telugu</option>
+                        <option value="ta">Tamil</option>
+                    </select>
+                </div>
+                <button type="submit" name="convert">Convert</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Converted Text -->
+        {% if converted_text %}
+        <div class="converted">
+            <h3>Translated Text:</h3>
+            <p>{{ converted_text }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 <a href="https://ascendum.com" target="_blank">Ascendum Technologies</a>. All rights reserved.
+    </footer>
+</body>
+</html>
