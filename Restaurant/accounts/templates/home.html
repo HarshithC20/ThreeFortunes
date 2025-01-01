@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TBOS Navigation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #f0f4f8;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--background-color);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-sections {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .nav-section {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 20px;
+            width: calc(33.333% - 20px);
+            min-width: 250px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nav-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        @media (max-width: 768px) {
+            .nav-sections {
+                flex-direction: column;
+            }
+
+            .nav-section {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TBOS Navigation</h1>
+        <div class="nav-sections">
+            <section class="nav-section">
+                <h2>Accounts</h2>
+                <ul>
+                    <li><a href="{% url 'Signup View' %}">Register</a></li>
+                    <li><a href="{% url 'Signin View' %}">Login</a></li>
+                    <li><a href="{% url 'Items View' %}">View Items - Admin</a></li>
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h2>Menu</h2>
+                <ul>
+                    <li><a href="{% url 'Menu View' %}">Menu</a></li>
+                    <!-- <li><a href="{% url 'place_order' %}">Place Order</a></li> -->
+                    <li><a href="{% url 'table_entry' %}">Table Entry</a></li>
+                </ul>
+            </section>
+            <section class="nav-section">
+                <h2>Kitchen</h2>
+                <ul>
+                    <li><a href="{% url 'Kitchen View' %}">Kitchen Menu</a></li>
+                    <!-- <li><a href="{% url 'kitchen_orders' %}">Kitchen Orders</a></li> -->
+                </ul>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
+

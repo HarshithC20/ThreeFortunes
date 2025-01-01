@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -7,6 +7,10 @@ from .models import User
 from django.contrib.auth.hashers import check_password
 from .models import Foods
 from django.conf import settings
+
+
+def home(request):
+    return render(request, 'home.html')
 
 def register_user(request):
     if request.method == "POST":
@@ -62,25 +66,47 @@ def logout_user(request):
 
 def items(request):
     if request.method == 'POST':
+        # Handle create or update logic
+        food_id = request.POST.get('food_id')  # Check for update case
         food_name = request.POST.get('food_name')
         food_category = request.POST.get('food_category')
         food_price = request.POST.get('food_price')
         food_image = request.FILES.get('food_image')
-        # image_url = request.build_absolute_uri(settings.MEDIA_URL + f"food_images/{food_image}")
 
-        # Save the data to the model
-        Foods.objects.create(
-            foodname=food_name,
-            category=food_category,
-            price=food_price,
-            image=food_image
-        )
-        foods = Foods.objects.all()
-        return render(request, 'items.html', {'foods': foods})  # Redirect after successful addition
+        if food_id:  # Update existing food item
+            food_item = get_object_or_404(Foods, id=food_id)
+            food_item.foodname = food_name
+            food_item.category = food_category
+            food_item.price = food_price
+            if food_image:  # Update image if uploaded
+                food_item.image = food_image
+            food_item.save()
+            messages.success(request, "Food item updated successfully!")
+        else:  # Create new food item
+            Foods.objects.create(
+                foodname=food_name,
+                category=food_category,
+                price=food_price,
+                image=food_image
+            )
+            messages.success(request, "Food item added successfully!")
 
-    # Fetch all food items to display
+        return redirect('Items View')  # Redirect after creation or update
+
+    elif request.method == 'GET':
+        # Handle delete action
+        action = request.GET.get('action')
+        food_id = request.GET.get('id')
+        if action == 'delete' and food_id:
+            food_item = get_object_or_404(Foods, id=food_id)
+            food_item.delete()
+            messages.success(request, "Food item deleted successfully!")
+            return redirect('Items View')
+
+    # Fetch all food items to display in the template
     foods = Foods.objects.all()
     return render(request, 'items.html', {'foods': foods})
+
 
 
 

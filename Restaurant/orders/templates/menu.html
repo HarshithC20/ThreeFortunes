@@ -3,9 +3,528 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Page</title>
+    <title>Elegant Eats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #f8f8f8;
+            --accent-color: #d4af37;
+            --text-color: #333;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: rgba(26, 26, 26, 0.9);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            background-color: rgba(26, 26, 26, 1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .table-info {
+            text-align: left;
+            color: #3a7bd5;
+            width: 200px;
+        }
+
+        main {
+            padding-top: 100px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: var(--secondary-color);
+            margin: 40px 0;
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background-color: transparent;
+            color: var(--secondary-color);
+            border: 2px solid var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: 'Lato', sans-serif;
+        }
+
+        button:hover, button.active {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        #food-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .food-item {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .food-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .food-item img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .food-item h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .food-item p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        .item-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .item-controls button {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+
+        .item-controls button:hover {
+            background-color: #b8960f;
+        }
+
+        .item-controls span {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        #sidebar {
+            position: fixed;
+            right: -300px;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: var(--primary-color);
+            padding: 20px;
+            transition: var(--transition);
+            overflow-y: auto;
+            color: var(--secondary-color);
+            z-index: 1000;
+        }
+
+        #sidebar.open {
+            right: 0;
+        }
+
+        #sidebar h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        #cart-items {
+            list-style-type: none;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        #sidebar hr {
+            border: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
+        }
+
+        #sidebar h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        #place-order-btn {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            margin-top: 20px;
+            border: none;
+        }
+
+        #place-order-btn:hover {
+            background-color: #b8960f;
+        }
+
+        #cart-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 1001;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #cart-toggle:hover {
+            background-color: #b8960f;
+        }
+
+        .table-info {
+            text-align: left;
+            color: #3a7bd5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin: 20px 0;
+            }
+
+            #food-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .food-item img {
+                height: 150px;
+            }
+
+            #sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            #cart-toggle {
+                right: 10px;
+                top: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Menu page</h1>
+    <header>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="table-info">
+                    <h3>Table Number: {{ table_number }}</h3>
+                    <h4>Customer Name: {{ customer_name }}</h4>
+                </div>
+                <div class="logo">Elegant Eats</div>
+                <div style="width: 200px;"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Our Exquisite Menu</h1>
+
+            <div class="filter-buttons">
+                <button onclick="filterByCategory('All')" class="active">All</button>
+                <button onclick="filterByCategory('Starter')">Starters</button>
+                <button onclick="filterByCategory('Main Course')">Main Course</button>
+                <button onclick="filterByCategory('Dessert')">Desserts</button>
+                <button onclick="filterByCategory('Snacks')">Snacks</button>
+            </div>
+
+            <div id="food-container">
+                {% for food in foods %}
+                    <div class="food-item" data-category="{{ food.category }}">
+                        <h3>{{ food.foodname }}</h3>
+                        <p>Price: ${{ food.price }}</p>
+                        {% if food.image %}
+                            <img src="{{ food.image.url }}" alt="{{ food.foodname }}">
+                        {% endif %}
+                        <div class="item-controls">
+                            <button onclick="removeFromCart('{{ food.foodname }}')">-</button>
+                            <span id="{{ food.foodname }}-quantity">0</span>
+                            <button onclick="addToCart('{{ food.foodname }}', {{ food.price }})">+</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <button id="cart-toggle" onclick="toggleCart()">🛒</button>
+
+    <div id="sidebar">
+        <h3>Your Cart</h3>
+        <ul id="cart-items"></ul>
+        <hr>
+        <h4>Total: $<span id="cart-total">0.00</span></h4>
+        <button id="place-order-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <script>
+        let cart = {};
+
+        function addToCart(name, price) {
+            if (cart[name]) {
+                cart[name].quantity += 1;
+            } else {
+                cart[name] = { price: price, quantity: 1 };
+            }
+            updateCartDisplay();
+            updateItemQuantityDisplay(name);
+        }
+
+        function removeFromCart(name) {
+            if (cart[name]) {
+                cart[name].quantity -= 1;
+                if (cart[name].quantity <= 0) {
+                    delete cart[name];
+                }
+            }
+            updateCartDisplay();
+            updateItemQuantityDisplay(name);
+        }
+
+        function updateItemQuantityDisplay(name) {
+            const quantityElement = document.getElementById(`${name}-quantity`);
+            if (quantityElement) {
+                quantityElement.textContent = cart[name] ? cart[name].quantity : 0;
+            }
+        }
+
+        function updateCartDisplay() {
+            const sidebar = document.getElementById('sidebar');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+
+            if (Object.keys(cart).length > 0) {
+                sidebar.style.display = 'block';
+            } else {
+                sidebar.style.display = 'none';
+            }
+
+            cartItems.innerHTML = '';
+            let total = 0;
+            for (const [name, item] of Object.entries(cart)) {
+                total += item.price * item.quantity;
+
+                const cartItem = document.createElement('li');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="cart-item-info">
+                        <span>${name}</span>
+                        <span>$${item.price.toFixed(2)} x ${item.quantity}</span>
+                    </div>
+                    <div class="cart-item-buttons">
+                        <button onclick="removeFromCart('${name}')">-</button>
+                        <button onclick="addToCart('${name}', ${item.price})">+</button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            }
+            cartTotal.textContent = total.toFixed(2);
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        function placeOrder() {
+            if (Object.keys(cart).length === 0) {
+                alert("Cart is empty. Please add items to place an order.");
+                return;
+            }
+
+            const orderData = {
+                items: cart,
+                total_price: parseFloat(document.getElementById('cart-total').textContent),
+            };
+
+            fetch('/orders/placeOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify(orderData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        alert(data.message);
+                        cart = {};
+                        updateCartDisplay();
+                    } else if (data.error) {
+                        alert(`Error: ${data.error}`);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function filterByCategory(category) {
+            document.querySelectorAll('.filter-buttons button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === category) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const foodItems = document.querySelectorAll('.food-item');
+            foodItems.forEach(item => {
+                if (category === 'All' || item.dataset.category === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            const visibleItems = document.querySelectorAll('.food-item[style="display: block;"]');
+            const foodContainer = document.getElementById('food-container');
+            if (visibleItems.length === 0) {
+                const noItemsMessage = document.createElement('p');
+                noItemsMessage.textContent = 'No items available in this category.';
+                noItemsMessage.className = 'no-items-message';
+                foodContainer.appendChild(noItemsMessage);
+            } else {
+                const existingMessage = foodContainer.querySelector('.no-items-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+            }
+        }
+
+        filterByCategory('All');
+
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
+

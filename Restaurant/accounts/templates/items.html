@@ -5,43 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Items</title>
     <style>
-        /* Keep the existing styles */
-        /* Additional styles for the food items list */
-        .food-items {
-            margin: 20px auto;
-            max-width: 800px;
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://source.unsplash.com/1600x900/?food,restaurant') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
             padding: 20px;
             background: rgba(255, 255, 255, 0.9);
-            color: #333;
             border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .food-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .food-item:last-child {
-            border-bottom: none;
-        }
-
-        .food-item img {
-            max-width: 50px;
-            border-radius: 5px;
+        h1{
+            text-align: center;
+            color: #444;
+            font-family: 'Georgia', serif; /* Change to your desired font */
+            font-size: 2.5rem; /* Adjust font size */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+        } 
+        
+        h2 {
+            text-align: center;
+            color: #333;
         }
 
         .toggle-btn {
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 5px;
+            font-size: 1rem;
             background: #f8b400;
             color: #fff;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
             text-transform: uppercase;
         }
@@ -52,10 +54,100 @@
 
         .form-container {
             display: none;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .form-container.active {
             display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background: #45a049;
+        }
+
+        .food-items {
+            margin-top: 30px;
+        }
+
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(145deg, #e9ecef, #ffffff);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-item:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s;
+        }
+
+        .food-item img {
+            max-width: 70px;
+            border-radius: 10px;
+            margin-left: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-buttons button {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .edit-btn {
+            background: #3498db;
+        }
+
+        .edit-btn:hover {
+            background: #2980b9;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
         }
     </style>
 </head>
@@ -66,10 +158,12 @@
         <!-- Toggle Button -->
         <button class="toggle-btn" onclick="toggleForm()">Add Food Item</button>
 
-        <!-- Add Food Item Form -->
+        <!-- Add/Edit Food Item Form -->
         <div class="form-container">
             <form method="POST" action="{% url 'Items View' %}" enctype="multipart/form-data">
                 {% csrf_token %}
+                <input type="hidden" id="food_id" name="food_id"> <!-- Hidden field for Edit -->
+
                 <div class="form-group">
                     <label for="food_name">Food Name:</label>
                     <input type="text" id="food_name" name="food_name" placeholder="Enter food name" required>
@@ -90,9 +184,9 @@
                 </div>
                 <div class="form-group">
                     <label for="food_image">Upload Image:</label>
-                    <input type="file" id="food_image" name="food_image" accept="image/*" required>
+                    <input type="file" id="food_image" name="food_image" accept="image/*">
                 </div>
-                <button type="submit">Add Food</button>
+                <button type="submit" id="form-submit-btn">Add Food</button>
             </form>
         </div>
 
@@ -105,16 +199,41 @@
                     <strong>{{ food.foodname }}</strong> - {{ food.category }} - ${{ food.price }}
                 </div>
                 <img src="{{ food.image.url }}" alt="{{ food.foodname }}">
+                <div class="action-buttons">
+                    <button class="edit-btn" 
+                        onclick="editFood('{{ food.id }}', '{{ food.foodname }}', '{{ food.category }}', '{{ food.price }}')">Edit</button>
+                    <a href="?action=delete&id={{ food.id }}" onclick="return confirm('Are you sure you want to delete this item?');">
+                        <button class="delete-btn">Delete</button>
+                    </a>
+                </div>
             </div>
             {% endfor %}
         </div>
     </div>
 
     <script>
-        // Toggle the Add Food Item form
         function toggleForm() {
             const formContainer = document.querySelector('.form-container');
             formContainer.classList.toggle('active');
+
+            document.getElementById('food_id').value = '';
+            document.getElementById('food_name').value = '';
+            document.getElementById('food_category').value = '';
+            document.getElementById('food_price').value = '';
+            document.getElementById('food_image').value = '';
+            document.getElementById('form-submit-btn').innerText = 'Add Food';
+        }
+
+        function editFood(id, name, category, price) {
+            const formContainer = document.querySelector('.form-container');
+            formContainer.classList.add('active');
+
+            document.getElementById('food_id').value = id;
+            document.getElementById('food_name').value = name;
+            document.getElementById('food_category').value = category;
+            document.getElementById('food_price').value = price;
+
+            document.getElementById('form-submit-btn').innerText = 'Update Food';
         }
     </script>
 </body>
