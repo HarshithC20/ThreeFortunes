@@ -7,6 +7,7 @@ from .models import User
 from django.contrib.auth.hashers import check_password
 from .models import Foods
 from django.conf import settings
+from orders.models import Order
 
 
 def home(request):
@@ -105,7 +106,8 @@ def items(request):
 
     # Fetch all food items to display in the template
     foods = Foods.objects.all()
-    return render(request, 'items.html', {'foods': foods})
+    orders = Order.objects.all()
+    return render(request, 'items.html', {'foods': foods, 'orders': orders})
 
 
 
