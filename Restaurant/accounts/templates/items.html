@@ -266,17 +266,44 @@
                 {% for order in orders %}
                 <div class="item order-item">
                     <div>
+                        <table style="border-spacing: 20px; width: 100%; text-align: left;">
+                            <tr>
+                                <th>Table</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Date</th>
+                                <th>Price</th>
+                            </tr>
+                            {% for item_name, details in order.items.items %}
+                            <tr>
+                                <td>{{ order.table_number }}</td>
+                                <td>{{ order.customer_name }}</td>
+                                <td><div>
+                                    <!-- <strong>Items:</strong><br> -->
+                                    {% for item_name, details in order.items.items %}
+                                        {{ item_name }}: {{ details.quantity }} x ${{ details.price }}<br>
+                                    {% endfor %}
+                                </div></td>
+                                <td>{{ order.created_at }}</td>
+                                <td>${{ order.total_price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+
+                    <!-- <div>
                         <strong>Order ID: {{ order.id }}</strong><br>
                         Table: {{ order.table_number }}<br>
                         Customer: {{ order.customer_name }}<br>
-                        Total: ${{ order.total_price }}
+                        Total: ${{ order.total_price }}<br>
+                        Date: {{ order.created_at }}
                     </div>
                     <div>
                         <strong>Items:</strong><br>
                         {% for item_name, details in order.items.items %}
                             {{ item_name }}: {{ details.quantity }} x ${{ details.price }}<br>
                         {% endfor %}
-                    </div>
+                    </div> -->
                 </div>
                 {% endfor %}
             </div>
