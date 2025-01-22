@@ -3,9 +3,39 @@ from orders.models import TableDetails, Order
 from accounts.models import Foods
 from django.http import JsonResponse
 import json
+from django.utils import timezone
+
+
+
+import qrcode
+from io import BytesIO
+from django.http import HttpResponse
+
+def generate_qr_code(request):
+    # URL for the table_entry API
+    table_entry_url = request.build_absolute_uri('/orders/table-entry/')
+
+    # Generate the QR code
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(table_entry_url)
+    qr.make(fit=True)
+
+    # Create an image of the QR code
+    qr_image = qr.make_image(fill="black", back_color="white")
+    buffer = BytesIO()
+    qr_image.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    # Return the QR code as an HTTP response
+    return HttpResponse(buffer, content_type="image/png")
+
 
 # Table Entry View
 def table_entry(request):
+
+# Prepare range for dropdown (accessible for both GET and POST requests)
+    table_numbers = range(1, 11)
+    
     if request.method == 'POST':
         # Get data from the form
         table_number = request.POST.get('table_number')
@@ -21,8 +51,9 @@ def table_entry(request):
         # Redirect to the menu page
         return redirect('/orders/menu/')
 
+
     # Render the form page
-    return render(request, 'tableEntry.html')
+    return render(request, 'tableEntry.html', {'table_numbers': table_numbers})
 
 
 # Menu View
@@ -50,6 +81,8 @@ def place_order(request):
             data = json.loads(request.body)
             items = data.get('items', {})
             total_price = data.get('total_price', 0)
+            customer_note = data.get('customer_note', None)  # Retrieve the optional note
+
 
             # Retrieve table details from the session
             table_num = request.session.get('table_number')
@@ -60,7 +93,10 @@ def place_order(request):
                 items=items,
                 total_price=total_price,
                 table_number=table_num,
-                customer_name=cust_name
+                customer_name=cust_name,
+                created_at=timezone.now(),
+                customer_note=customer_note,  # Save the note
+
             )
 
             # Return success response
@@ -68,7 +104,11 @@ def place_order(request):
                 'message': 'Order placed successfully!',
                 'order_id': order.id,
                 'table_number': table_num,
-                'customer_name': cust_name
+                'customer_name': cust_name,
+                'customer_note': customer_note,  # Include the note in the response
+
+                # 'created_at': order.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Format the timestamp
+
             }, status=201)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)

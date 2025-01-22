@@ -92,15 +92,32 @@
                 padding: 20px;
             }
         }
+
+        
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Enter Table Details</h1>
+
+        <!-- QR Code Section -->
+        <h3>Scan the QR Code to Enter Table Details</h3>
+        <img src="/orders/generate_qr_code/" alt="QR Code">
+
         <form method="POST" action="/orders/table-entry/">
             {% csrf_token %}
+
+            <!-- <label for="table_number">Table Number</label>
+            <input type="number" id="table_number" name="table_number" required> -->
+
+             <!-- Dropdown for Table Number -->
             <label for="table_number">Table Number</label>
-            <input type="number" id="table_number" name="table_number" required>
+            <select id="table_number" name="table_number" required>
+                <option value="" disabled selected>Select a table</option>
+                {% for number in table_numbers %}
+                <option value="{{ number }}">Table {{ number }}</option>
+                {% endfor %}
+            </select>
 
             <label for="customer_name">Customer Name</label>
             <input type="text" id="customer_name" name="customer_name" required>
